@@ -8,6 +8,19 @@ function CardFooter () {
   const [isLiked, setIsLiked] = useState<boolean>(true)
   const [isDisliked, setIsDisliked] = useState<boolean>(false)
 
+  const handlePressLike = () => {
+    setIsLiked(!isLiked)
+    setIsDisliked(false)
+    // TODO implémenter l'appel d'API
+  }
+
+  const handlePressDislike = () => {
+    setIsDisliked(!isDisliked)
+    setIsLiked(false)
+    // TODO implémenter l'appel d'API
+  }
+  
+
   return (
     <ThemedView style={styles.cardContainer}>
       <TouchableOpacity 
