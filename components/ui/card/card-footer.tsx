@@ -1,24 +1,44 @@
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 function CardFooter () {
+  const [isLiked, setIsLiked] = useState<boolean>(true)
+  const [isDisliked, setIsDisliked] = useState<boolean>(false)
+
   return (
     <ThemedView style={styles.cardContainer}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity 
+        style={[
+          styles.button, 
+          {
+            borderBottomLeftRadius: 20,
+            backgroundColor: isLiked ? Colors.light.green : ''
+          }
+        ]}
+      >
         <FontAwesome 
           name='thumbs-o-up' 
           size={24} 
-          color={Colors.light.gray} 
+          color={isLiked ? Colors.light.background : Colors.light.gray} 
         />
       </TouchableOpacity>
       <View style={styles.separator} />
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity         
+        style={[
+          styles.button, 
+          {
+            borderBottomRightRadius: 20,
+            backgroundColor: isDisliked ? Colors.light.red : ''
+          }
+        ]}
+      >
         <FontAwesome 
           name='thumbs-o-down' 
           size={24} 
-          color={Colors.light.gray} 
+          color={isDisliked ? Colors.light.background : Colors.light.gray} 
         />
       </TouchableOpacity>
     </ThemedView>
