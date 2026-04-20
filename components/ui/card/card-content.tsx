@@ -2,11 +2,11 @@ import { ThemedView } from "@/components/themed-view";
 import { Image } from "expo-image";
 import { StyleSheet } from "react-native";
 
-function CardContent () {
+function CardContent ({ url }: { url: string }) {
   return (
     <ThemedView>
       <Image
-        source={require('@/assets/images/example-image.jpg')}
+        source={{ uri: url }}
         style={styles.image}
       />
     </ThemedView>

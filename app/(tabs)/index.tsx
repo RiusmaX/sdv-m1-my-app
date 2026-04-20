@@ -1,50 +1,43 @@
-import { Image } from 'expo-image';
-import { StyleSheet } from 'react-native';
-
-import Clock from '@/components/clock';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import Card from '@/components/ui/card';
+import { supabase } from '@/lib/supabase';
+import { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 export default function HomeScreen() {
+  const [pictures, setPictures] = useState<any[]>([])
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+
+  async function fetchPictures() {
+    setRefreshing(true)
+    const { data } = await supabase.from('Pictures').select()
+    setPictures(data || [])
+    setRefreshing(false)
+  }
+
+  useEffect(() => {
+    fetchPictures()
+  }, [])
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome! YES</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView>
-        <Clock />
-        <Card />
-      </ThemedView>
-    </ParallaxScrollView>
+    <ThemedView style={styles.container}>
+      <FlatList
+        data={pictures}
+        keyExtractor={(item) => item.id}
+        onRefresh={fetchPictures}
+        refreshing={refreshing}
+        ItemSeparatorComponent={() => <View style={{height: 20}} />}
+        renderItem={({ item }) => (
+          <Card url={item.url} />
+        )}
+      />
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    padding: 16,
   },
 });

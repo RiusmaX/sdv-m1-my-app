@@ -4,11 +4,11 @@ import CardContent from "./card-content";
 import CardFooter from "./card-footer";
 import CardHeader from "./card-header";
 
-function Card () {
+function Card ({ url }: { url: string }) {
   return (
     <ThemedView style={styles.cardContainer}>
       <CardHeader />
-      <CardContent />
+      <CardContent url={url} />
       <CardFooter />
     </ThemedView>
   )
