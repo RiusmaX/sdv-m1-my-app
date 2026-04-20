@@ -1,11 +1,12 @@
 import { ThemedView } from "@/components/themed-view";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 function PhotoScreen () {
   const [facing, setFacing] = useState<"front" | "back">("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef<CameraView | null>(null);
 
   if (!permission) {
     // Camera permissions are still loading
@@ -29,13 +30,26 @@ function PhotoScreen () {
   function toggleFacing() {
     setFacing((prev) => (prev === "back" ? "front" : "back"));
   }
+
+  function takePicture () {
+    if (cameraRef.current) {
+      cameraRef.current.takePictureAsync().then((photo) => { 
+        console.log("Photo taken:", photo);
+      }).catch((error) => {
+        console.error("Error taking picture:", error);
+      });
+    }
+  }
   
   return (
      <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} />
+      <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
       <View style={styles.buttonContainer}>
         <Pressable style={styles.button} onPress={toggleFacing}>
           <Text style={styles.text}>Flip Camera</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={takePicture}>
+          <Text style={styles.text}>Take Picture</Text>
         </Pressable>
       </View>
     </View>
