@@ -23,12 +23,13 @@ function CardFooter () {
 
   return (
     <ThemedView style={styles.cardContainer}>
-      <TouchableOpacity 
+      <TouchableOpacity
+        onPress={handlePressLike}
         style={[
           styles.button, 
           {
             borderBottomLeftRadius: 20,
-            backgroundColor: isLiked ? Colors.light.green : ''
+            backgroundColor: isLiked ? Colors.light.green : 'transparent'
           }
         ]}
       >
@@ -39,12 +40,13 @@ function CardFooter () {
         />
       </TouchableOpacity>
       <View style={styles.separator} />
-      <TouchableOpacity         
+      <TouchableOpacity   
+        onPress={handlePressDislike}      
         style={[
           styles.button, 
           {
             borderBottomRightRadius: 20,
-            backgroundColor: isDisliked ? Colors.light.red : ''
+            backgroundColor: isDisliked ? Colors.light.red : 'transparent'
           }
         ]}
       >
