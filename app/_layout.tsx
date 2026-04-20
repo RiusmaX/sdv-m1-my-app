@@ -30,19 +30,18 @@ export default function RootLayout() {
     })
 
     supabase.auth.onAuthStateChange(async (_event, _session) => {
-      const { data } = await supabase.auth.getClaims();
-
-      if (!data) return
-      const { claims } = data
-
-      if (claims) {
-        setUserId(claims?.sub ?? null);
-        setEmail(claims?.email ?? '');
-      } else {
+      if (!_session) {
         setUserId(null);
         setEmail('');
+        return;
       }
-    })
+
+      const { data } = await supabase.auth.getClaims();
+      if (!data?.claims) return;
+
+      setUserId(data.claims.sub ?? null);
+      setEmail(data.claims.email ?? '');
+    });
   }, []);
 
   return (
