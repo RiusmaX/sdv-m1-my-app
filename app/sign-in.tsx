@@ -49,8 +49,9 @@ function SignInScreen () {
         onChangeText={(text) => setPassword(text)}
         value={password}
       />
-      <Button title="Se connecter" onPress={handleSignIn} />
-      <Button title="S'inscrire" onPress={handleSignUp} />
+      {error ? <Text style={{ color: 'red' }}>{error}</Text> : null}
+      <Button title="Se connecter" onPress={handleSignIn} disabled={loading} />
+      <Button title="S'inscrire" onPress={handleSignUp} disabled={loading} />
     </ThemedView>
   )
 }
