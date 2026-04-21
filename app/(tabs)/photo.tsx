@@ -1,3 +1,4 @@
+import PhotoView from "@/components/photo-view";
 import { ThemedView } from "@/components/themed-view";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
@@ -7,6 +8,7 @@ function PhotoScreen () {
   const [facing, setFacing] = useState<"front" | "back">("back");
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView | null>(null);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
 
   if (!permission) {
     // Camera permissions are still loading
@@ -31,29 +33,36 @@ function PhotoScreen () {
     setFacing((prev) => (prev === "back" ? "front" : "back"));
   }
 
-  function takePicture () {
+  async function takePicture () {
     if (cameraRef.current) {
-      cameraRef.current.takePictureAsync().then((photo) => { 
+      try {
+        const photo = await cameraRef.current.takePictureAsync()
         console.log("Photo taken:", photo);
-      }).catch((error) => {
+        setPhotoUri(photo.uri);
+      } catch (error) {
         console.error("Error taking picture:", error);
-      });
+      }
     }
   }
   
-  return (
-     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
-      <View style={styles.buttonContainer}>
-        <Pressable style={styles.button} onPress={toggleFacing}>
-          <Text style={styles.text}>Flip Camera</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={takePicture}>
-          <Text style={styles.text}>Take Picture</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
+  return photoUri 
+      ? <PhotoView 
+          uri={photoUri} 
+          onCancel={() => setPhotoUri(null)}
+        /> 
+      : (
+        <View style={styles.container}>
+          <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.button} onPress={toggleFacing}>
+              <Text style={styles.text}>Flip Camera</Text>
+            </Pressable>
+            <Pressable style={styles.button} onPress={takePicture}>
+              <Text style={styles.text}>Take Picture</Text>
+            </Pressable>
+          </View>
+        </View>
+      );
 }
 
 const styles = StyleSheet.create({
