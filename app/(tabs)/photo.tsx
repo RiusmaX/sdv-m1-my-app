@@ -1,5 +1,6 @@
 import PhotoView from "@/components/photo-view";
 import { ThemedView } from "@/components/themed-view";
+import { supabase } from "@/lib/supabase";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -9,6 +10,7 @@ function PhotoScreen () {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView | null>(null);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   if (!permission) {
     // Camera permissions are still loading
@@ -44,11 +46,47 @@ function PhotoScreen () {
       }
     }
   }
+
+  async function validatePicture () {
+    if (!photoUri) {
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const response = await fetch(photoUri);
+      const arrayBuffer = await response.arrayBuffer();
+
+      const extension = photoUri.split('.').pop()?.toLowerCase();
+      const normalizedExtension = extension === "png" ? "png" : "jpg";
+      const contentType = normalizedExtension === "png" ? "image/png" : "image/jpeg";
+      const filePath = `photo-${Date.now()}.${normalizedExtension}`;
+
+      const { data, error } = await supabase.storage
+        .from("photos")
+        .upload(filePath, arrayBuffer, { contentType });
+
+      if (error) {
+        console.error("Supabase upload error:", error);
+        return;
+      }
+
+      console.log("Supabase upload response:", data);
+      console.log("Photo validated:", photoUri);
+    } catch (error) {
+      console.error("Error validating/uploading picture:", error);
+    } finally {
+      setPhotoUri(null);
+      setLoading(false);
+    }
+  }
   
   return photoUri 
       ? <PhotoView 
           uri={photoUri} 
           onCancel={() => setPhotoUri(null)}
+          onValidate={validatePicture}
+          loading={loading}
         /> 
       : (
         <View style={styles.container}>

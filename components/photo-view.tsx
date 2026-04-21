@@ -1,15 +1,17 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Image } from "expo-image";
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
 function PhotoView ({
     uri,
     onValidate,
-    onCancel
+    onCancel,
+    loading
   }: {
     uri: string;
     onValidate?: () => void;
     onCancel?: () => void;
+    loading?: boolean;
   }) {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -49,7 +51,11 @@ function PhotoView ({
           borderRadius: 999,
         }}
       >
-        <MaterialIcons name="check" size={24} color="black" />
+        {loading ? (
+          <ActivityIndicator size="small" color="black" />
+        ) : (
+          <MaterialIcons name="check" size={24} color="black" />
+        )}
       </Pressable>
     </View>
   );
