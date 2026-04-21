@@ -28,7 +28,7 @@ export default function HomeScreen() {
         refreshing={refreshing}
         ItemSeparatorComponent={() => <View style={{height: 20}} />}
         renderItem={({ item }) => (
-          <Card url={item.url} />
+          <Card item={item} />
         )}
       />
     </ThemedView>

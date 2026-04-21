@@ -73,6 +73,12 @@ function PhotoScreen () {
 
       console.log("Supabase upload response:", data);
       console.log("Photo validated:", photoUri);
+
+      const { error: insertError } = await supabase.from('Pictures').insert({ path: data.path, created_at: new Date() });
+      if (insertError) {
+        console.error("Supabase insert error:", insertError);
+      }
+
     } catch (error) {
       console.error("Error validating/uploading picture:", error);
     } finally {
