@@ -4,6 +4,10 @@ import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
+function Separator() {
+  return <View style={{ height: 20 }} />;
+}
+
 export default function HomeScreen() {
   const [pictures, setPictures] = useState<any[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(false)
@@ -23,10 +27,10 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       <FlatList
         data={pictures}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         onRefresh={fetchPictures}
         refreshing={refreshing}
-        ItemSeparatorComponent={() => <View style={{height: 20}} />}
+        ItemSeparatorComponent={Separator}
         renderItem={({ item }) => (
           <Card item={item} />
         )}

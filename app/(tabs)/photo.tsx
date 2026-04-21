@@ -71,8 +71,9 @@ function PhotoScreen () {
         return;
       }
 
-      console.log("Supabase upload response:", data);
-      console.log("Photo validated:", photoUri);
+      console.log("Supabase upload response:", JSON.stringify(data));
+      const { data: urlData } = supabase.storage.from("photos").getPublicUrl(data.path);
+      console.log("Public URL:", urlData.publicUrl);
 
       const { error: insertError } = await supabase.from('Pictures').insert({ path: data.path, created_at: new Date() });
       if (insertError) {

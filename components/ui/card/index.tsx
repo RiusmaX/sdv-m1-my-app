@@ -1,26 +1,22 @@
 import { ThemedView } from "@/components/themed-view";
 import { supabase } from "@/lib/supabase";
-import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import CardContent from "./card-content";
 import CardFooter from "./card-footer";
 import CardHeader from "./card-header";
 
-function Card ({ item }: Readonly<{ item: any }>) {
-  const [resolvedUrl, setResolvedUrl] = useState<string | null>(
-    item.url ?? null
-  );
+function resolveUrl(item: any): string | null {
+  if (item.url) {
+    return item.url;
+  } else if (item.path) {
+    const { data } = supabase.storage.from("photos").getPublicUrl(item.path);
+    return data.publicUrl;
+  }
+  return null;
+}
 
-  useEffect(() => {
-    if (!item.url && item.path) {
-      supabase.storage
-        .from("photos")
-        .createSignedUrl(item.path, 3600)
-        .then(({ data, error }) => {
-          if (!error && data) setResolvedUrl(data.signedUrl);
-        });
-    }
-  }, [item.url, item.path]);
+function Card ({ item }: Readonly<{ item: any }>) {
+  const resolvedUrl = resolveUrl(item);
 
   console.log("Resolved URL for item:", item, "is", resolvedUrl);
   return (

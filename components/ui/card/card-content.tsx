@@ -2,7 +2,7 @@ import { ThemedView } from "@/components/themed-view";
 import { Image } from "expo-image";
 import { StyleSheet } from "react-native";
 
-function CardContent ({ url }: { url: string }) {
+function CardContent ({ url }: Readonly<{ url: string }>) {
   return (
     <ThemedView>
       <Image
@@ -15,7 +15,7 @@ function CardContent ({ url }: { url: string }) {
 
 const styles = StyleSheet.create({
   image: {
-    width: 'auto',
+    width: '100%',
     height: 400,
     objectFit: 'cover'
   }
