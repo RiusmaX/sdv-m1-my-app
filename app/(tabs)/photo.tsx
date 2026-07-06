@@ -62,6 +62,9 @@ function PhotoScreen () {
       const contentType = normalizedExtension === "png" ? "image/png" : "image/jpeg";
       const filePath = `photo-${Date.now()}.${normalizedExtension}`;
 
+      const user = await supabase.auth.getUser()
+      const userId = user.data.user?.id || "unknown_user";
+
       const { data, error } = await supabase.storage
         .from("photos")
         .upload(filePath, arrayBuffer, { contentType });
@@ -75,7 +78,11 @@ function PhotoScreen () {
       const { data: urlData } = supabase.storage.from("photos").getPublicUrl(data.path);
       console.log("Public URL:", urlData.publicUrl);
 
-      const { error: insertError } = await supabase.from('Pictures').insert({ path: data.path, created_at: new Date() });
+      const { error: insertError } = await supabase.from('Pictures').insert({ 
+        path: data.path, 
+        created_at: new Date(),
+        user_id: userId
+      });
       if (insertError) {
         console.error("Supabase insert error:", insertError);
       }

@@ -21,7 +21,7 @@ function Card ({ item }: Readonly<{ item: any }>) {
   console.log("Resolved URL for item:", item, "is", resolvedUrl);
   return (
     <ThemedView style={styles.cardContainer}>
-      <CardHeader />
+      <CardHeader item={item} />
       {resolvedUrl ? <CardContent url={resolvedUrl} /> : null}
       <CardFooter item={item} />
     </ThemedView>

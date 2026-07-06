@@ -3,14 +3,15 @@ import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
-function CardHeader () {
+function CardHeader ({ item }: Readonly<{ item: any }>) {
+  console.log(JSON.stringify(item, null, 2));
   return (
     <ThemedView style={styles.headerContainer}>
       <ThemedView style={styles.avatarContainer}>
         <ThemedText style={styles.avatarText}>MS</ThemedText>
       </ThemedView>
       <ThemedView>
-        <ThemedText>@Pseudo</ThemedText>
+        <ThemedText>@{item.Users?.email || 'Unknown User'}</ThemedText>
       </ThemedView>
     </ThemedView>
   )
