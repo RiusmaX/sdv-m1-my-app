@@ -3,12 +3,15 @@ import { Colors } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // status: true = liked, false = disliked, null = no vote
 function CardFooter ({ item }: Readonly<{ item: any }>) {
   const [userId, setUserId] = useState<string | null>(null)
   const [status, setStatus] = useState<boolean | null>(null)
+
+  const likesCount = item.Likes?.filter((like: any) => like.is_liked === true).length || 0
+  const dislikesCount = item.Likes?.filter((like: any) => like.is_liked === false).length || 0
 
   useEffect(() => {
     let mounted = true
@@ -78,6 +81,9 @@ function CardFooter ({ item }: Readonly<{ item: any }>) {
           size={24}
           color={isLiked ? Colors.light.background : Colors.light.gray}
         />
+        {likesCount > 0 && (
+          <Text style={{color: isLiked ? Colors.light.background : Colors.light.gray}}>({likesCount})</Text>
+        )}
       </TouchableOpacity>
       <View style={styles.separator} />
       <TouchableOpacity
@@ -95,6 +101,9 @@ function CardFooter ({ item }: Readonly<{ item: any }>) {
           size={24}
           color={isDisliked ? Colors.light.background : Colors.light.gray}
         />
+        {dislikesCount > 0 && (
+          <Text style={{color: isDisliked ? Colors.light.background : Colors.light.gray}}>({dislikesCount})</Text>
+        )}
       </TouchableOpacity>
     </ThemedView>
   )
@@ -112,7 +121,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6
+    paddingVertical: 6,
+    gap: 4
+  },
+  buttonText: {
+    color: Colors.light.background,
+    fontSize: 16
   },
   separator: {
     backgroundColor: Colors.light.gray,

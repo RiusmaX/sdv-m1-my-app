@@ -17,6 +17,7 @@ export default function HomeScreen() {
     try {
       const { data } = await supabase.from('Pictures')
       .select('*, Likes(*)')
+      .order('created_at', { ascending: false })
       console.log('Fetched pictures:', data)
       setPictures(data || [])
     } catch (e) {
@@ -28,6 +29,16 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetchPictures()
+    const channel = supabase.channel('public:Pictures')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'Pictures' }, (payload) => {
+        console.log('Change received!', payload)
+        fetchPictures()
+      })
+      .subscribe()
+      
+    return () => { 
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   return (
