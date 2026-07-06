@@ -23,7 +23,7 @@ function Card ({ item }: Readonly<{ item: any }>) {
     <ThemedView style={styles.cardContainer}>
       <CardHeader />
       {resolvedUrl ? <CardContent url={resolvedUrl} /> : null}
-      <CardFooter />
+      <CardFooter item={item} />
     </ThemedView>
   )
 }

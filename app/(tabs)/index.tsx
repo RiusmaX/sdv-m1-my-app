@@ -14,9 +14,16 @@ export default function HomeScreen() {
 
   async function fetchPictures() {
     setRefreshing(true)
-    const { data } = await supabase.from('Pictures').select()
-    setPictures(data || [])
-    setRefreshing(false)
+    try {
+      const { data } = await supabase.from('Pictures')
+      .select('*, Likes(*)')
+      console.log('Fetched pictures:', data)
+      setPictures(data || [])
+    } catch (e) {
+      console.error('Error fetching pictures:', e)
+    } finally {
+      setRefreshing(false)
+    }
   }
 
   useEffect(() => {
